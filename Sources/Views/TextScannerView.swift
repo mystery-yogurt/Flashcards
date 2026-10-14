@@ -1,3 +1,4 @@
+#if !targetEnvironment(simulator)
 import SwiftUI
 import VisionKit
 
@@ -42,3 +43,4 @@ struct TextScannerView: UIViewControllerRepresentable {
         }
     }
 }
+#endif
