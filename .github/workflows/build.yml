@@ -29,16 +29,13 @@ jobs:
           CODE_SIGNING_REQUIRED=NO \
           build
           
-      - name: Package for Appetize (ZIP the .app)
+      - name: Prepare Artifact folder
         run: |
-          cd build/Build/Products/Debug-iphonesimulator
-          # Проверяем, что папка Flashcards.app действительно существует
-          ls -l 
-          # Правильно архивируем .app с помощью родной утилиты macOS (ditto)
-          ditto -c -k --sequesterRsrc --keepParent Flashcards.app FlashcardsApp.zip
+          mkdir -p AppetizeUpload
+          cp -r build/Build/Products/Debug-iphonesimulator/Flashcards.app AppetizeUpload/
           
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Appetize-App
-          path: build/Build/Products/Debug-iphonesimulator/FlashcardsApp.zip
+          path: AppetizeUpload/
