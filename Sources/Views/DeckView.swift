@@ -8,9 +8,15 @@ struct DeckView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
-                ForEach(viewModel.cards) { card in
-                    FlashcardView(viewModel: FlashcardViewModel(card: card))
-                        .padding(.horizontal)
+                if viewModel.cards.isEmpty {
+                    Text("Словарь пуст. Отсканируйте новые слова.")
+                        .foregroundColor(.gray)
+                        .padding(.top, 50)
+                } else {
+                    ForEach(viewModel.cards) { card in
+                        FlashcardView(viewModel: FlashcardViewModel(card: card))
+                            .padding(.horizontal)
+                    }
                 }
             }
             .padding(.vertical)
@@ -19,19 +25,23 @@ struct DeckView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    if DataScannerViewController.isSupported && DataScannerViewController.isAvailable {
-                        isShowingScanner = true
-                    } else {
-                        print("Сканирование не поддерживается на данном устройстве/симуляторе")
-                    }
+                    isShowingScanner = true
                 }) {
                     Image(systemName: "camera.viewfinder")
                 }
             }
         }
         .sheet(isPresented: $isShowingScanner) {
-            TextScannerView(recognizedText: $viewModel.scannedWord)
-                .edgesIgnoringSafeArea(.all)
+            #if targetEnvironment(simulator)
+                SimulatedScannerView(recognizedText: $viewModel.scannedWord)
+            #else
+                if DataScannerViewController.isSupported && DataScannerViewController.isAvailable {
+                    TextScannerView(recognizedText: $viewModel.scannedWord)
+                        .edgesIgnoringSafeArea(.all)
+                } else {
+                    SimulatedScannerView(recognizedText: $viewModel.scannedWord)
+                }
+            #endif
         }
     }
 }
