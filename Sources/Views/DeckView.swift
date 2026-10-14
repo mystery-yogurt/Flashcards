@@ -1,5 +1,7 @@
 import SwiftUI
+#if !targetEnvironment(simulator)
 import VisionKit
+#endif
 
 struct DeckView: View {
     @StateObject var viewModel: DeckViewModel
