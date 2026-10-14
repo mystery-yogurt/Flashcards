@@ -1,3 +1,4 @@
+// Sources/Views/MainView.swift
 import SwiftUI
 import Charts
 
@@ -8,7 +9,6 @@ struct MainView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 24) {
-                    
                     VStack(alignment: .leading) {
                         Text("Статистика за неделю")
                             .font(.headline)
@@ -35,27 +35,30 @@ struct MainView: View {
                             .padding(.horizontal)
                         
                         ForEach(viewModel.dictionaries) { dict in
-                            HStack {
-                                Circle()
-                                    .fill(Color.blue) // В будущем можно парсить colorHex
-                                    .frame(width: 40, height: 40)
-                                    .overlay(Text(String(dict.name.prefix(1))).foregroundColor(.white))
-                                
-                                VStack(alignment: .leading) {
-                                    Text(dict.name)
-                                        .font(.system(size: 16, weight: .semibold))
-                                    Text("\(dict.wordsCount) слов")
-                                        .font(.caption)
+                            NavigationLink(destination: DeckView(viewModel: DeckViewModel(dictionary: dict))) {
+                                HStack {
+                                    Circle()
+                                        .fill(Color(hex: dict.colorHex) ?? Color.blue)
+                                        .frame(width: 40, height: 40)
+                                        .overlay(Text(String(dict.name.prefix(1))).foregroundColor(.white))
+                                    
+                                    VStack(alignment: .leading) {
+                                        Text(dict.name)
+                                            .font(.system(size: 16, weight: .semibold))
+                                            .foregroundColor(.primary)
+                                        Text("\(dict.wordsCount) слов")
+                                            .font(.caption)
+                                            .foregroundColor(.gray)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
                                         .foregroundColor(.gray)
                                 }
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(.gray)
+                                .padding()
+                                .background(Color(UIColor.secondarySystemBackground))
+                                .cornerRadius(12)
+                                .padding(.horizontal)
                             }
-                            .padding()
-                            .background(Color(UIColor.secondarySystemBackground))
-                            .cornerRadius(12)
-                            .padding(.horizontal)
                         }
                     }
                     
@@ -77,5 +80,17 @@ struct MainView: View {
             }
             .navigationTitle("Тренажер слов")
         }
+    }
+}
+
+extension Color {
+    init?(hex: String) {
+        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
+        hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
+        var rgb: UInt64 = 0
+        guard Scanner(string: hexSanitized).scanHexInt64(&rgb) else { return nil }
+        self.init(red: Double((rgb & 0xFF0000) >> 16) / 255.0,
+                  green: Double((rgb & 0x00FF00) >> 8) / 255.0,
+                  blue: Double(rgb & 0x0000FF) / 255.0)
     }
 }
