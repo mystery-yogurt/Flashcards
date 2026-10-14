@@ -32,7 +32,10 @@ jobs:
       - name: Package for Appetize (ZIP the .app)
         run: |
           cd build/Build/Products/Debug-iphonesimulator
-          zip -r FlashcardsApp.zip Flashcards.app
+          # Проверяем, что папка Flashcards.app действительно существует
+          ls -l 
+          # Правильно архивируем .app с помощью родной утилиты macOS (ditto)
+          ditto -c -k --sequesterRsrc --keepParent Flashcards.app FlashcardsApp.zip
           
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
