@@ -1,6 +1,7 @@
 name: Flashcards
 options:
   bundleIdPrefix: com.student
+  xcodeVersion: "15.4"
 targets:
   Flashcards:
     type: application
