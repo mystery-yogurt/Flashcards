@@ -1,0 +1,57 @@
+import SwiftUI
+
+struct SimulatedScannerView: View {
+    @Binding var recognizedText: String
+    @Environment(\.dismiss) var dismiss
+
+    let mockRecognizedWords = ["Repository", "Architecture", "Deployment", "Compiler"]
+    
+    var body: some View {
+        ZStack {
+            Color.black.edgesIgnoringSafeArea(.all)
+            
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.yellow, lineWidth: 2)
+                .frame(width: 300, height: 150)
+                .background(Color.yellow.opacity(0.1))
+            
+            VStack(spacing: 30) {
+                Text("КАМЕРА")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding(.top, 40)
+                
+                Text("Нажмите на распознанное слово:")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                
+                Spacer()
+                
+                VStack(spacing: 16) {
+                    ForEach(mockRecognizedWords, id: \.self) { word in
+                        Button(action: {
+                            recognizedText = word
+                            dismiss()
+                        }) {
+                            Text(word)
+                                .font(.system(size: 18, weight: .bold))
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                .background(Color.yellow)
+                                .foregroundColor(.black)
+                                .cornerRadius(8)
+                        }
+                    }
+                }
+                
+                Spacer()
+                
+                Button("Отмена") {
+                    dismiss()
+                }
+                .foregroundColor(.white)
+                .padding(.bottom, 30)
+            }
+        }
+    }
+}
